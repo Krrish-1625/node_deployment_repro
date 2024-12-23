@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "resources": [
+      {
+        "name": "[parameters('functionAppName')]",
+        "type": "Microsoft.Web/sites",
+        "apiVersion": "2021-02-01",
+        "location": "[parameters('location')]",
+        "properties": {
+          "siteConfig": {
+            "appSettings": [
+              {
+                "name": "WEBSITE_RUN_FROM_PACKAGE",
+                "value": "1"
+              }
+            ]
+          }
+        },
+        "resources": [
+          {
+            "name": "ZipDeploy",
+            "type": "Extensions",
+            "apiVersion": "2021-02-01",
+            "dependsOn": [
+              "[concat('Microsoft.Web/sites/', parameters('functionAppName'))]"
+            ],
+            "properties": {
+              "packageUri": "[parameters('zipPackageUri')]"
+            }
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "location": {
+        "type": "string"
+      },
+      "functionAppName": {
+        "type": "string"
+      },
+      "zipPackageUri": {
+        "type": "string"
+      }
+    }
+  }
